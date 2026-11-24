@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رحلة في مصر القديمة – لعبة تعليمية</title>
+<style>
+:root{--bg:#f7f1e3;--card:#fff;--ink:#1f3a5f;--mut:#6b6b6b;--gold:#c9a227;--ok:#1b7f3b;--okbg:#e3f4e8;--bad:#b3261e;--badbg:#fbe4e2;--line:#e2d8bd;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14202e;--card:#1d2d41;--ink:#f1e9d2;--mut:#a9b4c2;--gold:#e0b83a;--ok:#6fd28f;--okbg:#17382a;--bad:#ff8f87;--badbg:#44221f;--line:#34475f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14202e;--card:#1d2d41;--ink:#f1e9d2;--mut:#a9b4c2;--gold:#e0b83a;--ok:#6fd28f;--okbg:#17382a;--bad:#ff8f87;--badbg:#44221f;--line:#34475f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif;line-height:1.7}
+.wrap{max-width:680px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px}
+h1{font-size:30px;margin:6px 0}h2{font-size:21px;margin:4px 0 12px}
+.c{text-align:center}.big{font-size:64px;line-height:1.2}.mut{color:var(--mut)}
+button{font:inherit;cursor:pointer;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:12px 16px}
+.btn{background:var(--gold);border-color:var(--gold);color:#1a1a1a;font-weight:700;font-size:19px;padding:13px 28px}
+.opt{display:block;width:100%;text-align:right;margin:9px 0;font-size:18px}
+.opt:hover:not(:disabled){border-color:var(--gold)}
+.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.opt.gone{opacity:.25;text-decoration:line-through}
+.bar{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;font-weight:700;margin-bottom:10px}
+.pill{background:var(--card);border:2px solid var(--line);border-radius:99px;padding:2px 12px;font-size:15px}
+.track{height:10px;border-radius:9px;background:var(--line);overflow:hidden;margin:6px 0 14px}
+.fill{height:100%;background:var(--gold);width:0;transition:width .3s}
+.tfill{background:var(--ok)}
+.fb{border-radius:14px;padding:12px 14px;margin-top:12px;font-size:16px}
+.fb.ok{background:var(--okbg);color:var(--ok)}.fb.bad{background:var(--badbg);color:var(--bad)}
+.map{display:flex;gap:6px;justify-content:center;margin:10px 0;font-size:22px}
+.map span{opacity:.3}.map .d{opacity:1}
+.rev{border-top:1px solid var(--line);padding:8px 0;font-size:15px}
+.hide{display:none}
+</style></head><body><div class="wrap" id="app"></div>
+<script>
+const Q=[
+{i:"📜",t:"العصور التاريخية",q:"بدأت العصور التاريخية عقب معرفة الإنسان المصري القديم لـ:",o:["الزراعة","الكتابة","التعدين","بناء الأهرام"],a:1,e:"العصور التاريخية بدأت بمعرفة الكتابة وتسجيل الأحداث، وقسّم المؤرخ مانيتون التاريخ إلى 30 أسرة حاكمة."},
+{i:"👑",t:"العصر العتيق",q:"من أهم إنجازات الملك نعرمر (مينا):",o:["حفر قناة سيزوستريس","توحيد القطرين وتأسيس حكومة مركزية بمنف","بناء الهرم الأكبر","طرد الهكسوس"],a:1,e:"نعرمر (مينا) وحّد القطرين وسجّل انتصاراته على لوحة نعرمر، وأسس أقدم حكومة مركزية بمدينة منف."},
+{i:"🔺",t:"الدولة القديمة",q:"سُمّي عصر الدولة القديمة بعصر بناة الأهرام لأنه:",o:["كثرت فيه الحروب الخارجية","شُيّد فيه عدد كبير من الأهرامات الضخمة","غزاه الهكسوس","حُفرت فيه القنوات"],a:1,e:"شُيّدت فيه أهرامات ضخمة في ظل حكومة مركزية قوية، ومن ملوكه زوسر وخوفو وخفرع."},
+{i:"🌾",t:"الدولة الوسطى",q:"قام الملك سنوسرت الثالث بحفر قناة لربط البحر الأحمر بنهر النيل تُسمى:",o:["السويس","سيزوستريس","السلام","المحمودية"],a:1,e:"قناة سيزوستريس من مشروعات عصر الرخاء الاقتصادي في الدولة الوسطى، ومعها سد اللاهون."},
+{i:"⚔️",t:"الهكسوس وحرب التحرير",q:"أي مما يأتي ساعد الهكسوس على غزو مصر في نهاية الدولة الوسطى؟",o:["قوة الجيش المصري","توحيد القطرين","بناء الأهرامات","ضعف الحكم وتفكك البلاد"],a:3,e:"ضعف الحكم في نهاية الدولة الوسطى مكّن الهكسوس من اتخاذ أواريس عاصمة، ثم طردهم أمراء طيبة بقيادة أحمس بدعم الملكة إياح حتب."},
+{i:"🏹",t:"الدولة الحديثة",q:"سُمّي عصر الدولة الحديثة بعصر المجد الحربي لأنه:",o:["بُنيت فيه الأهرامات","كثرت فيه انتصارات الجيش المصري كمعركتي مجدو وقادش","حُفرت فيه قناة سيزوستريس","احتله الفرس"],a:1,e:"من أبرز انتصاراته معركة مجدو بقيادة تحتمس الثالث، ومعركة قادش بقيادة رمسيس الثاني."},
+{i:"🏛️",t:"نهاية العصور الفرعونية",q:"أي مما يأتي من أسباب سقوط العصور الفرعونية؟",o:["كثرة الانتصارات","توحيد القطرين","ضعف الحكام وتدهور الاقتصاد والصراعات الداخلية","قوة الجيش"],a:2,e:"ضعف الحكام وتدهور الاقتصاد وزيادة الصراعات الداخلية أدّت إلى وقوع مصر تحت سيطرة الفرس."}];
+const TIME=20,app=document.getElementById('app');
+let S,tm;
+const best=()=>{try{return +localStorage.getItem('egy_best')||0}catch(e){return 0}};
+const save=v=>{try{localStorage.setItem('egy_best',v)}catch(e){}};
+function start(){S={n:0,score:0,hearts:3,streak:0,right:0,fifty:true,wrong:[],t:TIME,done:false};show()}
+function home(){app.innerHTML=`<div class="card c"><div class="big">🏺</div><h1>رحلة في مصر القديمة</h1>
+<p class="mut">درس: حياة المصريين القدماء — لعبة تعليمية من 7 مراحل</p>
+<p>اجمع النقاط، حافظ على قلوبك الثلاثة، واستخدم مساعدة «حذف إجابتين» مرة واحدة. كل إجابة صحيحة سريعة تمنحك نقاطًا إضافية، والإجابات المتتالية تمنحك مكافأة سلسلة 🔥</p>
+<p class="mut">أفضل نتيجة: <b>${best()}</b> نقطة</p><button class="btn" id="go">ابدأ الرحلة ▶</button></div>`;
+ document.getElementById('go').onclick=start}
+function show(){clearInterval(tm);if(S.n>=Q.length)return end();
+ const q=Q[S.n];S.t=TIME;S.done=false;
+ S.ord=q.o.map((x,i)=>i).sort(()=>Math.random()-.5);
+ app.innerHTML=`<div class="bar"><span class="pill">⭐ <span id="sc">${S.score}</span></span><span class="pill">${'❤️'.repeat(S.hearts)||'💔'}</span><span class="pill">🔥 ${S.streak}</span></div>
+<div class="track"><div class="fill" style="width:${S.n/Q.length*100}%"></div></div>
+<div class="card"><div class="mut">المرحلة ${S.n+1} من ${Q.length} — ${q.t}</div>
+<div class="c big">${q.i}</div><h2>${q.q}</h2>
+<div id="opts">${S.ord.map(i=>`<button class="opt" data-i="${i}">${q.o[i]}</button>`).join('')}</div>
+<div class="track"><div class="fill tfill" id="tf" style="width:100%"></div></div>
+<div class="bar"><span class="mut">⏱ <span id="tt">${TIME}</span> ث</span><button id="f5" ${S.fifty?'':'disabled'}>✂️ حذف إجابتين</button></div>
+<div id="fb"></div></div>`;
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
+ document.getElementById('f5').onclick=fifty;
+ tm=setInterval(()=>{S.t--;document.getElementById('tt').textContent=S.t;document.getElementById('tf').style.width=S.t/TIME*100+'%';if(S.t<=0)pick(-1)},1000)}
+function fifty(){if(!S.fifty||S.done)return;S.fifty=false;const q=Q[S.n];
+ const w=[...document.querySelectorAll('.opt')].filter(b=>+b.dataset.i!==q.a).sort(()=>Math.random()-.5).slice(0,2);
+ w.forEach(b=>{b.classList.add('gone');b.disabled=true});document.getElementById('f5').disabled=true}
+function pick(i){if(S.done)return;S.done=true;clearInterval(tm);const q=Q[S.n],ok=i===q.a;let msg;
+ document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.i;if(k===q.a)b.classList.add('ok');else if(k===i)b.classList.add('bad')});
+ document.getElementById('f5').disabled=true;
+ if(ok){S.streak++;S.right++;const tb=S.t*5,sb=(S.streak-1)*20,g=100+tb+sb;S.score+=g;
+  msg=`✅ إجابة صحيحة! +${g} نقطة (أساسي 100 + سرعة ${tb}${sb?` + سلسلة ${sb}`:''})`}
+ else{S.streak=0;S.hearts=Math.max(0,S.hearts-1);S.wrong.push(q);msg=i<0?'⏰ انتهى الوقت! خسرت قلبًا.':'❌ إجابة خاطئة، خسرت قلبًا.'}
+ document.getElementById('sc').textContent=S.score;
+ document.getElementById('fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${msg}</b><br>${q.e}</div><p class="c"><button class="btn" id="nx">${S.n+1<Q.length?'المرحلة التالية ◀':'عرض النتيجة 🏆'}</button></p>`;
+ document.getElementById('nx').onclick=()=>{S.n++;show()}}
+function end(){const hb=S.hearts*50;S.score+=hb;const r=S.right,rank=r===7?['👑','فرعون مصر']:r>=5?['🏺','وزير الملك']:r>=3?['📜','كاتب ماهر']:['🌱','متدرّب مبتدئ'];
+ const b=best(),nb=S.score>b;if(nb)save(S.score);
+ app.innerHTML=`<div class="card c"><div class="big">${rank[0]}</div><h1>${rank[1]}</h1>
+<div class="map">${Q.map((q,i)=>`<span class="${Q.indexOf(q)>=0&&!S.wrong.includes(q)?'d':''}">${q.i}</span>`).join('')}</div>
+<p>أجبت صحيحًا عن <b>${r}</b> من 7 — مكافأة القلوب المتبقية: ${hb} نقطة</p>
+<h2>⭐ مجموع النقاط: ${S.score}</h2>
+<p class="mut">${nb?'🎉 رقم قياسي جديد!':'أفضل نتيجة: '+b}</p>
+${S.wrong.length?`<div style="text-align:right"><b>راجع ما أخطأت فيه:</b>${S.wrong.map(q=>`<div class="rev"><b>${q.t}:</b> ${q.e}</div>`).join('')}</div>`:'<p>🌟 لم تُخطئ في أي مرحلة!</p>'}
+<p><button class="btn" id="re">العب مرة أخرى 🔄</button></p></div>`;
+ document.getElementById('re').onclick=start}
+home();
+</script></body></html>
